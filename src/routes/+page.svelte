@@ -3,13 +3,16 @@
     import CreateDeviceDialog from '$lib/components/CreateDeviceDialog.svelte';
     import ImageManager from '$lib/components/ImageManager.svelte';
     import ImageRepo from '$lib/components/ImageRepo.svelte';
+    import ApkManager from '$lib/components/ApkManager.svelte';
+    import AdbConsole from '$lib/components/AdbConsole.svelte';
     import type { DeviceConfig } from '$lib/api/devices';
 
-    type NavView = 'devices' | 'images';
+    type NavView = 'devices' | 'images' | 'apk';
 
     let view = $state<NavView>('devices');
     let selectedId = $state<string | null>(null);
     let showCreateDialog = $state(false);
+    let showAdb = $state(false);
     let deviceList: DeviceList;
 
     function onDeviceCreated(device: DeviceConfig) {
@@ -25,19 +28,14 @@
         </div>
 
         <nav class="sidebar-nav">
-            <button
-                class="nav-item"
-                class:active={view === 'devices'}
-                onclick={() => (view = 'devices')}
-            >
+            <button class="nav-item" class:active={view === 'devices'} onclick={() => (view = 'devices')}>
                 Devices
             </button>
-            <button
-                class="nav-item"
-                class:active={view === 'images'}
-                onclick={() => (view = 'images')}
-            >
+            <button class="nav-item" class:active={view === 'images'} onclick={() => (view = 'images')}>
                 Images
+            </button>
+            <button class="nav-item" class:active={view === 'apk'} onclick={() => (view = 'apk')}>
+                APK
             </button>
         </nav>
 
@@ -59,11 +57,25 @@
                 <div class="divider"></div>
                 <ImageRepo />
             </div>
+        {:else if view === 'apk'}
+            <div class="panel-view split-v">
+                <ApkManager />
+                <div class="adb-pane" class:visible={showAdb}>
+                    <AdbConsole />
+                </div>
+                <button
+                    class="adb-toggle ghost"
+                    onclick={() => (showAdb = !showAdb)}
+                    title="Toggle ADB console"
+                >
+                    {showAdb ? 'Hide' : 'Show'} ADB Console
+                </button>
+            </div>
         {:else if selectedId}
             <div class="animate-in placeholder">
-                <p class="text-secondary">Device: {selectedId}</p>
+                <p class="text-secondary">Device: <code class="mono">{selectedId}</code></p>
                 <p class="text-muted" style="font-size: 12px; margin-top: 4px;">
-                    Detail panel - coming in next commit.
+                    Device detail panel coming soon.
                 </p>
             </div>
         {:else}
@@ -118,8 +130,8 @@
 
     .nav-item {
         flex: 1;
-        padding: 5px 8px;
-        font-size: 12px;
+        padding: 5px 4px;
+        font-size: 11px;
         font-weight: 500;
         color: var(--text-muted);
         background: transparent;
@@ -161,6 +173,32 @@
         gap: 0;
     }
 
+    .panel-view.split-v {
+        padding: 0;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .adb-pane {
+        display: none;
+        height: 280px;
+        flex-shrink: 0;
+    }
+
+    .adb-pane.visible {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .adb-toggle {
+        position: absolute;
+        bottom: 8px;
+        right: 12px;
+        font-size: 11px;
+        padding: 4px 10px;
+        z-index: 10;
+    }
+
     .empty-state {
         display: flex;
         flex-direction: column;
@@ -169,9 +207,7 @@
         margin: auto;
     }
 
-    .empty-state h1 {
-        font-size: 24px;
-    }
+    .empty-state h1 { font-size: 24px; }
 
     .placeholder {
         margin: auto;

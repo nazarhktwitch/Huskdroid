@@ -1,11 +1,12 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { getDevice, type DeviceConfig } from '$lib/api/devices';
+    import { getDevice, deleteDevice, type DeviceConfig } from '$lib/api/devices';
     import { deviceStatuses, setStatus } from '$lib/stores/deviceStatus';
     import { startDevice, stopDevice, checkQemu } from '$lib/api/runtime';
     import SnapshotPanel from './SnapshotPanel.svelte';
+    import ConfirmDialog from './ConfirmDialog.svelte';
 
-    let { deviceId }: { deviceId: string } = $props();
+    let { deviceId, onDeleted }: { deviceId: string; onDeleted?: () => void } = $props();
 
     let device = $state<DeviceConfig | null>(null);
     let loading = $state(true);
@@ -48,6 +49,19 @@
         }
     }
 
+    let showConfirm = $state(false);
+
+    async function handleDelete() {
+        try {
+            await deleteDevice(deviceId);
+            onDeleted?.();
+        } catch (e) {
+            error = String(e);
+        } finally {
+            showConfirm = false;
+        }
+    }
+
     const isRunning = $derived($deviceStatuses[deviceId] === 'running');
 </script>
 
@@ -72,6 +86,7 @@
                         Start
                     </button>
                 {/if}
+                <button class="danger" onclick={() => (showConfirm = true)}>Delete</button>
             </div>
         </div>
 
@@ -121,6 +136,14 @@
         <SnapshotPanel deviceId={device.id} />
     {/if}
 </div>
+
+{#if showConfirm && device}
+    <ConfirmDialog
+        deviceName={device.name}
+        onConfirm={handleDelete}
+        onCancel={() => (showConfirm = false)}
+    />
+{/if}
 
 <style>
     .device-detail {

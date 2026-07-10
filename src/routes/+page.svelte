@@ -73,7 +73,10 @@
                 </button>
             </div>
         {:else if selectedId}
-            <DeviceDetail deviceId={selectedId} />
+            <DeviceDetail
+                deviceId={selectedId}
+                onDeleted={() => { selectedId = null; deviceList?.refresh(); }}
+            />
         {:else}
             <div class="empty-state animate-in">
                 <h1>Huskdroid</h1>

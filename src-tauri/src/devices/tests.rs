@@ -4,7 +4,7 @@ mod tests {
 
     #[test]
     fn device_config_round_trip() {
-        let original = DeviceConfig::new("test", "Android 14", 512);
+        let original = DeviceConfig::new("test", "Android 14", 512, 2);
         let json = serde_json::to_string(&original).expect("serialize failed");
         let decoded: DeviceConfig = serde_json::from_str(&json).expect("deserialize failed");
         assert_eq!(original.id, decoded.id);
@@ -33,8 +33,8 @@ mod tests {
 
     #[test]
     fn device_config_unique_ids() {
-        let a = DeviceConfig::new("a", "Android 12", 256);
-        let b = DeviceConfig::new("b", "Android 12", 256);
+        let a = DeviceConfig::new("a", "Android 12", 256, 2);
+        let b = DeviceConfig::new("b", "Android 12", 256, 2);
         assert_ne!(a.id, b.id);
     }
 }

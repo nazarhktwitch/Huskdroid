@@ -1,6 +1,6 @@
 [package]
 name = "huskdroid"
-version = "0.4.2"
+version = "0.4.3"
 description = "A lightweight Android emulator without bloat"
 edition = "2021"
 

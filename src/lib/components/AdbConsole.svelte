@@ -133,6 +133,7 @@
         background: var(--bg-elevated);
         border-radius: var(--radius-sm);
         border-left: 2px solid var(--border);
+        user-select: text;
     }
 
     .console-result.error {

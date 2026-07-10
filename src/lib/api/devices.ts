@@ -20,6 +20,7 @@ export interface DeviceConfig {
     android_version: string;
     image_path: string | null;
     ram_mb: number;
+    cpu_cores: number;
     root: RootConfig;
     sandbox: SandboxConfig;
     display_mode: string;
@@ -31,6 +32,7 @@ export interface CreateDevicePayload {
     name: string;
     android_version: string;
     ram_mb: number;
+    cpu_cores: number;
     root_enabled: boolean;
 }
 

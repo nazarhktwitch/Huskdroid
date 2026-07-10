@@ -39,6 +39,8 @@ pub struct DeviceConfig {
     pub android_version: String,
     pub image_path: Option<String>,
     pub ram_mb: u32,
+    #[serde(default = "default_cpu_cores")]
+    pub cpu_cores: u32,
     #[serde(default)]
     pub root: RootConfig,
     #[serde(default)]
@@ -55,14 +57,19 @@ fn default_display_mode() -> String {
     "windowed".to_string()
 }
 
+fn default_cpu_cores() -> u32 {
+    2
+}
+
 impl DeviceConfig {
-    pub fn new(name: impl Into<String>, android_version: impl Into<String>, ram_mb: u32) -> Self {
+    pub fn new(name: impl Into<String>, android_version: impl Into<String>, ram_mb: u32, cpu_cores: u32) -> Self {
         Self {
             id: Uuid::new_v4(),
             name: name.into(),
             android_version: android_version.into(),
             image_path: None,
             ram_mb,
+            cpu_cores,
             root: RootConfig::default(),
             sandbox: SandboxConfig::default(),
             display_mode: "windowed".to_string(),

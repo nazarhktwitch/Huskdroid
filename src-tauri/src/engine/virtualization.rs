@@ -21,9 +21,12 @@ impl Backend for QemuBackend {
         let mut cmd = Command::new(qemu);
 
         cmd.args(["-m", &args.ram_mb.to_string()]);
+        cmd.args(["-smp", &args.cpu_cores.to_string()]);
+        // Escape commas in path for QEMU
+        let safe_path = args.image_path.replace(",", ",,");
         cmd.args([
             "-drive",
-            &format!("file={},format=raw,if=virtio", args.image_path),
+            &format!("file={},if=virtio", safe_path),
         ]);
         cmd.args(["-serial", "tcp::5554,server,nowait"]);
 
@@ -81,23 +84,4 @@ impl Backend for QemuBackend {
             std::path::Path::new(&format!("/proc/{pid}")).exists()
         }
     }
-}
-
-fn which_qemu() -> Option<String> {
-    let name = "qemu-system-x86_64";
-    // Windows
-    if let Ok(out) = Command::new("where").arg(name).output() {
-        if out.status.success() {
-            let p = String::from_utf8_lossy(&out.stdout).trim().to_string();
-            if !p.is_empty() { return Some(p); }
-        }
-    }
-    // Unix
-    if let Ok(out) = Command::new("which").arg(name).output() {
-        if out.status.success() {
-            let p = String::from_utf8_lossy(&out.stdout).trim().to_string();
-            if !p.is_empty() { return Some(p); }
-        }
-    }
-    None
 }

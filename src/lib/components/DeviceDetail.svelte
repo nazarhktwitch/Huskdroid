@@ -160,6 +160,14 @@
                 {/if}
             </div>
             <div class="info-row">
+                <span class="info-label">CPU Cores</span>
+                {#if isRunning}
+                    <span class="info-val mono">{device.cpu_cores || 2}</span>
+                {:else}
+                    <input class="info-input mono" type="number" min="1" max="64" step="1" bind:value={device.cpu_cores} onchange={saveDevice} disabled={busy} />
+                {/if}
+            </div>
+            <div class="info-row">
                 <span class="info-label">Display</span>
                 {#if isRunning}
                     <span class="info-val mono">{device.display_mode}</span>

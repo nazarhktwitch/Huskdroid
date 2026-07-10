@@ -14,6 +14,7 @@ pub struct CreateDevicePayload {
     pub name: String,
     pub android_version: String,
     pub ram_mb: u32,
+    pub cpu_cores: u32,
     pub root_enabled: bool,
 }
 
@@ -29,7 +30,7 @@ pub fn create_device(
     payload: CreateDevicePayload,
 ) -> Result<DeviceConfig, String> {
     let mut mgr = state.0.lock().map_err(|e| e.to_string())?;
-    let mut config = DeviceConfig::new(payload.name, payload.android_version, payload.ram_mb);
+    let mut config = DeviceConfig::new(payload.name, payload.android_version, payload.ram_mb, payload.cpu_cores);
     config.root = RootConfig {
         enabled: payload.root_enabled,
         ..RootConfig::default()

@@ -11,13 +11,15 @@
 
     let name = $state('');
     let androidVersion = $state('Android 14');
-    let ramMb = $state(512);
+    let ramMb = $state(2048);
+    let cpuCores = $state(2);
     let rootEnabled = $state(false);
     let submitting = $state(false);
     let error = $state<string | null>(null);
 
     const ANDROID_VERSIONS = ['Android 10', 'Android 12', 'Android 13', 'Android 14', 'Android 15'];
-    const RAM_OPTIONS = [256, 512, 1024, 2048, 4096];
+    const RAM_OPTIONS = [512, 1024, 2048, 4096, 8192];
+    const CPU_OPTIONS = [1, 2, 4, 8, 16];
 
     async function submit() {
         if (!name.trim()) return;
@@ -28,6 +30,7 @@
                 name: name.trim(),
                 android_version: androidVersion,
                 ram_mb: ramMb,
+                cpu_cores: cpuCores,
                 root_enabled: rootEnabled,
             });
             onCreated?.(device);
@@ -43,7 +46,8 @@
         open = false;
         name = '';
         androidVersion = 'Android 14';
-        ramMb = 512;
+        ramMb = 2048;
+        cpuCores = 2;
         rootEnabled = false;
         error = null;
     }
@@ -92,6 +96,15 @@
                     <select id="device-ram" bind:value={ramMb}>
                         {#each RAM_OPTIONS as r}
                             <option value={r}>{r} MB</option>
+                        {/each}
+                    </select>
+                </label>
+
+                <label class="field">
+                    <span class="field-label">CPU Cores</span>
+                    <select id="device-cpu" bind:value={cpuCores}>
+                        {#each CPU_OPTIONS as c}
+                            <option value={c}>{c} Cores</option>
                         {/each}
                     </select>
                 </label>

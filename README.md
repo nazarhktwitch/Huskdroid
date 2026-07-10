@@ -58,10 +58,12 @@ Android-x86 Live CDs often fail to boot on QEMU for Windows (WHPX) due to missin
 Instead of an ISO, download a pre-installed virtual machine image (like `.vdi` or `.vmdk`) from [OSBoxes](https://www.osboxes.org/android-x86/).
 You can import `.vdi` and `.vmdk` files directly into Huskdroid! No conversion is needed.
 
+(If it still not booting, try option 2)
+
 **Option 2: QEMU Extra Arguments (Not guaranteed)**
 If you still want to try booting the ISO, you can force QEMU to use a different virtual graphics card.
 1. In Huskdroid, open your device's settings.
-2. In the **Extra Args** field, type `-vga vmware` or `-vga qxl`.
+2. In the **Extra Args** field, type `-vga vmware`, `-vga qxl`, `-vga std` or `-vga virtio`.
 3. Save and start the device.
 *(Note: This fix is NOT guaranteed to work on Windows due to WHPX limitations, and the ISO still might hang).*
 

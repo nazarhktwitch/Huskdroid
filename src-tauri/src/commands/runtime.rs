@@ -36,6 +36,7 @@ pub fn start_device(
                 .clone()
                 .ok_or("device has no image assigned")?,
             ram_mb: device.ram_mb,
+            cpu_cores: device.cpu_cores,
             disable_network: device.sandbox.disable_network,
             enable_root: device.root.enabled,
             display_mode: device.display_mode.clone(),

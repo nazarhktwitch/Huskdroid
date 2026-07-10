@@ -16,6 +16,7 @@ pub trait Backend: Send + Sync {
 pub struct BackendArgs {
     pub image_path: String,
     pub ram_mb: u32,
+    pub cpu_cores: u32,
     pub disable_network: bool,
     pub enable_root: bool,
     pub display_mode: String,

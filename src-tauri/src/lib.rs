@@ -23,6 +23,7 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
         .manage(Devices(Mutex::new(devices)))
         .manage(Images(Mutex::new(images)))
         .invoke_handler(tauri::generate_handler![

@@ -18,4 +18,4 @@ target
 **/mutants.out*/
 
 # IDE
-#.idea/
+.idea/

@@ -3,9 +3,7 @@ use std::path::PathBuf;
 
 use crate::devices::DeviceConfig;
 
-fn data_dir() -> PathBuf {
-    // tauri::api::path is not available here (no app handle), so use dirs crate pattern
-    // In practice this is called from Tauri commands that pass the app data dir
+pub fn data_dir() -> PathBuf {
     dirs_next::data_dir()
         .unwrap_or_else(|| PathBuf::from("."))
         .join("huskdroid")
@@ -54,6 +52,29 @@ pub fn save_images(images: &[crate::android::image_manager::ImageEntry]) -> Resu
         std::fs::create_dir_all(parent)?;
     }
     let json = serde_json::to_vec_pretty(images)?;
+    std::fs::write(&path, json)?;
+    Ok(())
+}
+
+fn snapshots_path() -> PathBuf {
+    data_dir().join("snapshots.json")
+}
+
+pub fn load_snapshots() -> Result<Vec<crate::android::snapshot::Snapshot>> {
+    let path = snapshots_path();
+    if !path.exists() {
+        return Ok(Vec::new());
+    }
+    let bytes = std::fs::read(&path)?;
+    Ok(serde_json::from_slice(&bytes)?)
+}
+
+pub fn save_snapshots(snapshots: &[crate::android::snapshot::Snapshot]) -> Result<()> {
+    let path = snapshots_path();
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    let json = serde_json::to_vec_pretty(snapshots)?;
     std::fs::write(&path, json)?;
     Ok(())
 }

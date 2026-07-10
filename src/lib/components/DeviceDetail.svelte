@@ -1,12 +1,17 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { getDevice, deleteDevice, type DeviceConfig } from '$lib/api/devices';
-    import { deviceStatuses, setStatus } from '$lib/stores/deviceStatus';
-    import { startDevice, stopDevice, checkQemu } from '$lib/api/runtime';
-    import SnapshotPanel from './SnapshotPanel.svelte';
-    import ConfirmDialog from './ConfirmDialog.svelte';
+    import { onMount } from "svelte";
+    import {
+        getDevice,
+        deleteDevice,
+        type DeviceConfig,
+    } from "$lib/api/devices";
+    import { deviceStatuses, setStatus } from "$lib/stores/deviceStatus";
+    import { startDevice, stopDevice, checkQemu } from "$lib/api/runtime";
+    import SnapshotPanel from "./SnapshotPanel.svelte";
+    import ConfirmDialog from "./ConfirmDialog.svelte";
 
-    let { deviceId, onDeleted }: { deviceId: string; onDeleted?: () => void } = $props();
+    let { deviceId, onDeleted }: { deviceId: string; onDeleted?: () => void } =
+        $props();
 
     let device = $state<DeviceConfig | null>(null);
     let loading = $state(true);
@@ -16,7 +21,10 @@
 
     onMount(async () => {
         try {
-            [device, qemuOk] = await Promise.all([getDevice(deviceId), checkQemu()]);
+            [device, qemuOk] = await Promise.all([
+                getDevice(deviceId),
+                checkQemu(),
+            ]);
         } catch (e) {
             error = String(e);
         } finally {
@@ -62,7 +70,7 @@
         }
     }
 
-    const isRunning = $derived($deviceStatuses[deviceId] === 'running');
+    const isRunning = $derived($deviceStatuses[deviceId] === "running");
 </script>
 
 <div class="device-detail animate-in">
@@ -75,24 +83,32 @@
             <div class="detail-title">
                 <h1>{device.name}</h1>
                 <span class="badge {isRunning ? 'running' : 'stopped'}">
-                    {isRunning ? 'running' : 'stopped'}
+                    {isRunning ? "running" : "stopped"}
                 </span>
             </div>
             <div class="detail-actions">
                 {#if isRunning}
-                    <button class="ghost" disabled={busy} onclick={handleStop}>Stop</button>
+                    <button class="ghost" disabled={busy} onclick={handleStop}
+                        >Stop</button
+                    >
                 {:else}
-                    <button class="primary" disabled={busy || !qemuOk} onclick={handleStart}>
+                    <button
+                        class="primary"
+                        disabled={busy || !qemuOk}
+                        onclick={handleStart}
+                    >
                         Start
                     </button>
                 {/if}
-                <button class="danger" onclick={() => (showConfirm = true)}>Delete</button>
+                <button class="danger" onclick={() => (showConfirm = true)}
+                    >Delete</button
+                >
             </div>
         </div>
 
         {#if !qemuOk}
             <div class="warning-banner">
-                QEMU not found in PATH — install QEMU to start devices.
+                QEMU not found in PATH - install QEMU to start devices.
             </div>
         {/if}
 
@@ -113,7 +129,9 @@
             </div>
             <div class="info-row">
                 <span class="info-label">Root</span>
-                <span class="info-val mono">{device.root.enabled ? 'enabled' : 'disabled'}</span>
+                <span class="info-val mono"
+                    >{device.root.enabled ? "enabled" : "disabled"}</span
+                >
             </div>
             <div class="info-row">
                 <span class="info-label">SELinux</span>
@@ -122,13 +140,15 @@
             <div class="info-row">
                 <span class="info-label">Network</span>
                 <span class="info-val mono">
-                    {device.sandbox.disable_network ? 'isolated' : 'enabled'}
+                    {device.sandbox.disable_network ? "isolated" : "enabled"}
                 </span>
             </div>
             {#if device.image_path}
                 <div class="info-row">
                     <span class="info-label">Image</span>
-                    <span class="info-val mono truncate">{device.image_path}</span>
+                    <span class="info-val mono truncate"
+                        >{device.image_path}</span
+                    >
                 </div>
             {/if}
         </div>
@@ -205,7 +225,9 @@
         border-bottom: 1px solid var(--border);
     }
 
-    .info-row:last-child { border-bottom: none; }
+    .info-row:last-child {
+        border-bottom: none;
+    }
 
     .info-label {
         font-size: 12px;

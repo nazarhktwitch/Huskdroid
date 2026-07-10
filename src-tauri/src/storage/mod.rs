@@ -34,3 +34,26 @@ pub fn save_devices(devices: &[DeviceConfig]) -> Result<()> {
     std::fs::write(&path, json)?;
     Ok(())
 }
+
+fn images_path() -> PathBuf {
+    data_dir().join("images.json")
+}
+
+pub fn load_images() -> Result<Vec<crate::android::image_manager::ImageEntry>> {
+    let path = images_path();
+    if !path.exists() {
+        return Ok(Vec::new());
+    }
+    let bytes = std::fs::read(&path)?;
+    Ok(serde_json::from_slice(&bytes)?)
+}
+
+pub fn save_images(images: &[crate::android::image_manager::ImageEntry]) -> Result<()> {
+    let path = images_path();
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    let json = serde_json::to_vec_pretty(images)?;
+    std::fs::write(&path, json)?;
+    Ok(())
+}

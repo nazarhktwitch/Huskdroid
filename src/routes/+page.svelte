@@ -1,6 +1,7 @@
 <script lang="ts">
     import DeviceList from '$lib/components/DeviceList.svelte';
     import CreateDeviceDialog from '$lib/components/CreateDeviceDialog.svelte';
+    import DeviceDetail from '$lib/components/DeviceDetail.svelte';
     import ImageManager from '$lib/components/ImageManager.svelte';
     import ImageRepo from '$lib/components/ImageRepo.svelte';
     import ApkManager from '$lib/components/ApkManager.svelte';
@@ -72,12 +73,7 @@
                 </button>
             </div>
         {:else if selectedId}
-            <div class="animate-in placeholder">
-                <p class="text-secondary">Device: <code class="mono">{selectedId}</code></p>
-                <p class="text-muted" style="font-size: 12px; margin-top: 4px;">
-                    Device detail panel coming soon.
-                </p>
-            </div>
+            <DeviceDetail deviceId={selectedId} />
         {:else}
             <div class="empty-state animate-in">
                 <h1>Huskdroid</h1>

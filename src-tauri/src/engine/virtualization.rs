@@ -32,7 +32,7 @@ impl Backend for QemuBackend {
             cmd.args(["-net", "nic", "-net", "user,hostfwd=tcp::5555-:5555"]);
         }
 
-        cmd.args(["-display", "none"]);
+        // cmd.args(["-display", "none"]);
         cmd.args(["-vga", "std"]); // Android hangs without a VGA adapter
         cmd.args(["-smp", "2"]);   // Give it 2 cores for faster boot
 

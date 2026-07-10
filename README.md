@@ -48,6 +48,19 @@ No images are bundled. Download separately and import via the **Images** tab:
 
 (You can use ANY android image you want, even self-compiled ones!)
 
+## Troubleshooting
+
+### QEMU Hangs on "ANDROID" Logo (Android-x86 ISO)
+If you are booting an official Android-x86 `.iso` file and it gets stuck on the loading logo for more than a few minutes, it is likely a graphics driver conflict with QEMU's default VGA adapter.
+
+**Fix:**
+1. When the blue GRUB boot menu appears, highlight **Live CD** and press `Tab`.
+2. A command line will appear at the bottom.
+3. Type a space, and add `nomodeset xforcevesa` to the very end of the line.
+4. Press `Enter` to boot.
+
+*(For a permanent fix, install the ISO to a `.qcow2` virtual disk or pass custom QEMU arguments like `-vga virtio` in the device settings).*
+
 ## License
 
 MIT - see [LICENSE](LICENSE).

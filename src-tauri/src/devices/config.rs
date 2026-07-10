@@ -36,15 +36,23 @@ pub struct SandboxConfig {
 pub struct DeviceConfig {
     pub id: Uuid,
     pub name: String,
-    /// Display label for the Android version, e.g. "Android 14"
     pub android_version: String,
-    /// Path to the image file or directory
     pub image_path: Option<String>,
-    /// RAM in megabytes
     pub ram_mb: u32,
+    #[serde(default)]
     pub root: RootConfig,
+    #[serde(default)]
     pub sandbox: SandboxConfig,
+    /// windowed, headless, vnc
+    #[serde(default = "default_display_mode")]
+    pub display_mode: String,
+    #[serde(default)]
+    pub custom_qemu_args: Option<String>,
     pub created_at: DateTime<Utc>,
+}
+
+fn default_display_mode() -> String {
+    "windowed".to_string()
 }
 
 impl DeviceConfig {
@@ -57,6 +65,8 @@ impl DeviceConfig {
             ram_mb,
             root: RootConfig::default(),
             sandbox: SandboxConfig::default(),
+            display_mode: "windowed".to_string(),
+            custom_qemu_args: None,
             created_at: Utc::now(),
         }
     }

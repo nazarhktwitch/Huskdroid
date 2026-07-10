@@ -66,6 +66,18 @@ If you still want to try booting the ISO, you can force QEMU to use a different 
 2. In the **Extra Args** field, type `-vga vmware`, `-vga qxl`, `-vga std` or `-vga virtio`.
 3. Save and start the device.
 *(Note: This fix is NOT guaranteed to work on Windows due to WHPX limitations, and the ISO still might hang).*
+*(Also try increasing ram)*
+
+### QEMU Error: "Could not open ... cannot find the specified path"
+If you get this error when starting a device, even though the image file clearly exists, **it is likely because the path contains non-English (e.g., Cyrillic/Russian) characters.** (For example: `D:\документы\android.vdi`).
+QEMU on Windows has limited support for non-ASCII characters in file paths.
+**Fix:** Move your `.vdi` or `.iso` file to a folder that contains only English letters and no special characters (e.g., `D:\VMs\android.vdi`) and re-import it into Huskdroid.
+
+## TODO
+
+- **Root Access Integration:** The Root toggle is present in the UI but not yet fully integrated into the backend. In the future, this will inject `su` via ADB or patch the boot image on the fly.
+- **Hardware Acceleration:** Native VirtIO GPU support and better 3D acceleration for Windows WHPX.
+- **Automatic Image Conversion:** Transparently converting raw disks to optimal formats on import.
 
 ## License
 

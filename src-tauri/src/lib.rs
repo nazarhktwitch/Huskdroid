@@ -1,3 +1,4 @@
+pub mod android;
 pub mod commands;
 pub mod devices;
 pub mod storage;

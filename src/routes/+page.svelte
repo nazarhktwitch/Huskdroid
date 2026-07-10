@@ -1,9 +1,13 @@
 <script lang="ts">
-    // Main app shell, sidebar + content area
     import DeviceList from '$lib/components/DeviceList.svelte';
     import CreateDeviceDialog from '$lib/components/CreateDeviceDialog.svelte';
+    import ImageManager from '$lib/components/ImageManager.svelte';
+    import ImageRepo from '$lib/components/ImageRepo.svelte';
     import type { DeviceConfig } from '$lib/api/devices';
 
+    type NavView = 'devices' | 'images';
+
+    let view = $state<NavView>('devices');
     let selectedId = $state<string | null>(null);
     let showCreateDialog = $state(false);
     let deviceList: DeviceList;
@@ -19,21 +23,47 @@
         <div class="sidebar-header">
             <span class="logo-text">Huskdroid</span>
         </div>
-        <div class="sidebar-body">
-            <DeviceList
-                bind:selectedId
-                bind:this={deviceList}
-                onAddClick={() => (showCreateDialog = true)}
-            />
-        </div>
+
+        <nav class="sidebar-nav">
+            <button
+                class="nav-item"
+                class:active={view === 'devices'}
+                onclick={() => (view = 'devices')}
+            >
+                Devices
+            </button>
+            <button
+                class="nav-item"
+                class:active={view === 'images'}
+                onclick={() => (view = 'images')}
+            >
+                Images
+            </button>
+        </nav>
+
+        {#if view === 'devices'}
+            <div class="sidebar-body">
+                <DeviceList
+                    bind:selectedId
+                    bind:this={deviceList}
+                    onAddClick={() => (showCreateDialog = true)}
+                />
+            </div>
+        {/if}
     </aside>
 
     <main class="main-content">
-        {#if selectedId}
-            <div class="animate-in">
-                <p class="text-secondary">Device selected: {selectedId}</p>
+        {#if view === 'images'}
+            <div class="panel-view">
+                <ImageManager />
+                <div class="divider"></div>
+                <ImageRepo />
+            </div>
+        {:else if selectedId}
+            <div class="animate-in placeholder">
+                <p class="text-secondary">Device: {selectedId}</p>
                 <p class="text-muted" style="font-size: 12px; margin-top: 4px;">
-                    Detail panel coming soon.
+                    Detail panel - coming in next commit.
                 </p>
             </div>
         {:else}
@@ -46,6 +76,7 @@
 </div>
 
 <CreateDeviceDialog bind:open={showCreateDialog} onCreated={onDeviceCreated} />
+
 <style>
     .app-shell {
         display: flex;
@@ -78,6 +109,36 @@
         letter-spacing: -0.02em;
     }
 
+    .sidebar-nav {
+        display: flex;
+        gap: 2px;
+        padding: 8px 8px 0;
+        flex-shrink: 0;
+    }
+
+    .nav-item {
+        flex: 1;
+        padding: 5px 8px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-muted);
+        background: transparent;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background var(--transition), color var(--transition);
+    }
+
+    .nav-item:hover {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+    }
+
+    .nav-item.active {
+        background: var(--bg-active);
+        color: var(--text-primary);
+    }
+
     .sidebar-body {
         flex: 1;
         overflow-y: auto;
@@ -88,19 +149,32 @@
         flex: 1;
         overflow: hidden;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: stretch;
+    }
+
+    .panel-view {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
     }
 
     .empty-state {
-        text-align: center;
         display: flex;
         flex-direction: column;
         gap: 8px;
+        text-align: center;
+        margin: auto;
     }
 
     .empty-state h1 {
         font-size: 24px;
-        color: var(--text-primary);
+    }
+
+    .placeholder {
+        margin: auto;
+        text-align: center;
     }
 </style>

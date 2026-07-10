@@ -6,6 +6,7 @@ pub mod storage;
 
 use android::image_manager::ImageManager;
 use commands::devices::{create_device, delete_device, get_device, list_devices, Devices};
+use commands::apk::{check_adb, exec_adb_root, exec_shell, get_selinux_mode, install_apk, list_adb_devices, list_packages, set_selinux_mode, uninstall_apk};
 use commands::images::{delete_image, import_image, list_images, Images};
 use commands::runtime::{check_qemu, device_status, start_device, stop_device, AppRuntime};
 use devices::DeviceManager;
@@ -42,6 +43,15 @@ pub fn run() {
             stop_device,
             device_status,
             check_qemu,
+            check_adb,
+            list_adb_devices,
+            install_apk,
+            uninstall_apk,
+            list_packages,
+            exec_adb_root,
+            get_selinux_mode,
+            set_selinux_mode,
+            exec_shell,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -68,10 +68,21 @@ If you still want to try booting the ISO, you can force QEMU to use a different 
 *(Note: This fix is NOT guaranteed to work on Windows due to WHPX limitations, and the ISO still might hang).*
 *(Also try increasing ram)*
 
+If this didn't help, try option 3
+
+**Option 3:**
+1. In huskdroid, open your device's settings.
+2. In the **Extra Args** field, type `-cpu max -vga vmware` or if it didn't even show you window, try `-cpu qemu64,+ssse3,+sse4.1,+sse4.2,+popcnt -vga vmware`.
+3. Save and start the device.
+
 ### QEMU Error: "Could not open ... cannot find the specified path"
 If you get this error when starting a device, even though the image file clearly exists, **it is likely because the path contains non-English (e.g., Cyrillic/Russian) characters.** (For example: `D:\документы\android.vdi`).
 QEMU on Windows has limited support for non-ASCII characters in file paths.
 **Fix:** Move your `.vdi` or `.iso` file to a folder that contains only English letters and no special characters (e.g., `D:\VMs\android.vdi`) and re-import it into Huskdroid.
+
+### QEMU Error: "WHPX: Unexpected VP exit code 4"
+If QEMU crashes immediately and prints this in the logs, it means the Windows Hypervisor Platform (WHPX) panicked due to hardware incompatibility with the guest CPU state. This typically happens when running Android-x86 9.0 (which relies heavily on a 32-bit `zygote32` process) on modern 64-bit CPUs using WHPX.
+**Fix:** You must use a different Android image. Try **Android-x86 7.1 (Nougat)** (less demanding) or a modern pure 64-bit image like **BlissOS / LineageOS (Android 11+)**, which drops the legacy 32-bit processes that cause WHPX to crash.
 
 ## TODO
 

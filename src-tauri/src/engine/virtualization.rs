@@ -24,9 +24,24 @@ impl Backend for QemuBackend {
         cmd.args(["-smp", &args.cpu_cores.to_string()]);
         // Escape commas in path for QEMU
         let safe_path = args.image_path.replace(",", ",,");
+        
+        let ext = std::path::Path::new(&args.image_path)
+            .extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or("");
+            
+        let format_str = match ext.to_lowercase().as_str() {
+            "vdi" => "format=vdi,",
+            "vmdk" => "format=vmdk,",
+            "qcow2" => "format=qcow2,",
+            "iso" => "format=raw,media=cdrom,",
+            "img" | "raw" => "format=raw,",
+            _ => "", // let qemu auto-detect if unknown
+        };
+
         cmd.args([
             "-drive",
-            &format!("file={},if=virtio", safe_path),
+            &format!("file={},{}if=virtio", safe_path, format_str),
         ]);
         cmd.args(["-serial", "tcp::5554,server,nowait"]);
 

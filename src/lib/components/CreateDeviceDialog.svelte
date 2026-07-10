@@ -17,7 +17,17 @@
     let submitting = $state(false);
     let error = $state<string | null>(null);
 
-    const ANDROID_VERSIONS = ['Android 10', 'Android 12', 'Android 13', 'Android 14', 'Android 15'];
+    const ANDROID_VERSIONS = [
+        'Android 4.4',
+        'Android 7.1',
+        'Android 8.1',
+        'Android 9.0',
+        'Android 10', 
+        'Android 12', 
+        'Android 13', 
+        'Android 14', 
+        'Android 15'
+    ];
     const RAM_OPTIONS = [512, 1024, 2048, 4096, 8192];
     const CPU_OPTIONS = [1, 2, 4, 8, 16];
 

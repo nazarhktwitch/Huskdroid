@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Main app shell - sidebar + content area
+  // Main app shell, sidebar + content area
   // Device list and navigation will be wired in as components are added
 </script>
 

@@ -1,13 +1,13 @@
 # Huskdroid
 
-Android sandbox manager for developers, testers, and security researchers.
+A lightweight Android emulator
 
 Run Android instances with root access, manage images, inspect and modify filesystems
-offline, install APKs, and create snapshots -- without a heavy emulator.
+offline, install APKs, and create snapshots without a heavy emulator
 
 ## Getting Started
 
-Releases are not yet available. To build from source, see [Build](#build).
+Releases are **not yet** available. To build from source, see [Build](#build)
 
 ## Features
 
@@ -23,7 +23,7 @@ Releases are not yet available. To build from source, see [Build](#build).
 
 ## Build
 
-Requirements: Rust, Node.js >= 18, QEMU (for device boot).
+Requirements: Rust, Node.js >= 18, QEMU (device boot)
 
 ```sh
 npm install

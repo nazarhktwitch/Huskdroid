@@ -1,13 +1,16 @@
 use anyhow::{Context, Result};
 use std::process::Command;
 
+use crate::commands::deps::resolve_adb_path;
+
 /// Run an adb command and return stdout as a String.
-/// Checks that adb is in PATH before running.
+/// Checks that adb is in PATH or downloaded locally before running.
 pub fn adb_cmd(args: &[&str]) -> Result<String> {
-    let output = Command::new("adb")
+    let adb = resolve_adb_path().ok_or_else(|| anyhow::anyhow!("ADB not found"))?;
+    let output = Command::new(adb)
         .args(args)
         .output()
-        .context("adb not found in PATH - install Android SDK platform-tools")?;
+        .context("Failed to spawn ADB process")?;
 
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
@@ -34,11 +37,7 @@ pub fn adb_devices() -> Result<Vec<String>> {
     Ok(devices)
 }
 
-/// Returns true if adb is available in PATH
+/// Returns true if adb is available
 pub fn adb_available() -> bool {
-    Command::new("adb")
-        .arg("version")
-        .output()
-        .map(|o| o.status.success())
-        .unwrap_or(false)
+    resolve_adb_path().is_some()
 }

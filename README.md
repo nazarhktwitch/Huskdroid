@@ -53,13 +53,17 @@ No images are bundled. Download separately and import via the **Images** tab:
 ### QEMU Hangs on "ANDROID" Logo (Android-x86 ISO)
 If you are booting an official Android-x86 `.iso` file and it gets stuck on the loading logo for more than a few minutes, it is likely a graphics driver conflict with QEMU's default VGA adapter.
 
-**Fix:**
-1. When the blue GRUB boot menu appears, highlight **Live CD** and press `Tab`.
-2. A command line will appear at the bottom.
-3. Type a space, and add `nomodeset xforcevesa` to the very end of the line.
-4. Press `Enter` to boot.
+**Option 1 (Recommended): Use a pre-installed image**
+Android-x86 Live CDs often fail to boot on QEMU for Windows (WHPX) due to missing 3D hardware acceleration drivers in the Windows build of QEMU.
+Instead of an ISO, download a pre-installed virtual machine image (like `.vdi` or `.vmdk`) from [OSBoxes](https://www.osboxes.org/android-x86/).
+You can import `.vdi` and `.vmdk` files directly into Huskdroid! No conversion is needed.
 
-*(For a permanent fix, install the ISO to a `.qcow2` virtual disk or pass custom QEMU arguments like `-vga virtio` in the device settings).*
+**Option 2: QEMU Extra Arguments (Not guaranteed)**
+If you still want to try booting the ISO, you can force QEMU to use a different virtual graphics card.
+1. In Huskdroid, open your device's settings.
+2. In the **Extra Args** field, type `-vga vmware` or `-vga qxl`.
+3. Save and start the device.
+*(Note: This fix is NOT guaranteed to work on Windows due to WHPX limitations, and the ISO still might hang).*
 
 ## License
 

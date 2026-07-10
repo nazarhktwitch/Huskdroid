@@ -1,5 +1,6 @@
 use anyhow::{anyhow, Context, Result};
 use std::process::{Child, Command};
+use crate::commands::deps::resolve_qemu_path;
 
 use super::backend::{Backend, BackendArgs};
 
@@ -7,14 +8,14 @@ pub struct QemuBackend;
 
 impl QemuBackend {
     pub fn check_available() -> bool {
-        which_qemu().is_some()
+        resolve_qemu_path().is_some()
     }
 }
 
 impl Backend for QemuBackend {
     fn start(&mut self, args: BackendArgs) -> Result<Child> {
-        let qemu = which_qemu().ok_or_else(|| {
-            anyhow!("qemu-system-x86_64 not found in PATH - install QEMU to start devices")
+        let qemu = resolve_qemu_path().ok_or_else(|| {
+            anyhow!("QEMU not found - please download it from settings or add it to PATH")
         })?;
 
         let mut cmd = Command::new(qemu);

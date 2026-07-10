@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 
-export type ImageFormat = 'raw' | 'qcow2' | 'iso' | 'folder' | 'unknown';
+export type ImageFormat = 'raw' | 'qcow2' | 'iso' | 'vdi' | 'vmdk' | 'folder' | 'unknown';
 
 export interface ImageEntry {
     id: string;

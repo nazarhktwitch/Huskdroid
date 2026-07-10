@@ -6,9 +6,10 @@
     import ImageRepo from '$lib/components/ImageRepo.svelte';
     import ApkManager from '$lib/components/ApkManager.svelte';
     import AdbConsole from '$lib/components/AdbConsole.svelte';
+    import SettingsPanel from '$lib/components/SettingsPanel.svelte';
     import type { DeviceConfig } from '$lib/api/devices';
 
-    type NavView = 'devices' | 'images' | 'apk';
+    type NavView = 'devices' | 'images' | 'apk' | 'settings';
 
     let view = $state<NavView>('devices');
     let selectedId = $state<string | null>(null);
@@ -37,6 +38,9 @@
             </button>
             <button class="nav-item" class:active={view === 'apk'} onclick={() => (view = 'apk')}>
                 APK
+            </button>
+            <button class="nav-item" class:active={view === 'settings'} onclick={() => (view = 'settings')}>
+                Settings
             </button>
         </nav>
 
@@ -72,7 +76,11 @@
                     <AdbConsole />
                 </div>
             </div>
-        {:else if selectedId}
+        {:else if view === 'settings'}
+            <div class="panel-view">
+                <SettingsPanel />
+            </div>
+        {:else if view === 'devices' && selectedId}
             <DeviceDetail
                 deviceId={selectedId}
                 onDeleted={() => { selectedId = null; deviceList?.refresh(); }}

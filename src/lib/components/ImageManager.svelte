@@ -29,7 +29,7 @@
             multiple: false,
             directory: false,
             filters: [
-                { name: 'Android images', extensions: ['img', 'raw', 'qcow2', 'iso'] },
+                { name: 'Android images', extensions: ['img', 'raw', 'qcow2', 'iso', 'vdi', 'vmdk'] },
                 { name: 'All files', extensions: ['*'] },
             ],
         });
@@ -60,9 +60,11 @@
 
     function formatLabel(fmt: string): string {
         const labels: Record<string, string> = {
-            raw: 'RAW / IMG',
+            raw: 'RAW',
             qcow2: 'QCOW2',
             iso: 'ISO',
+            vdi: 'VDI',
+            vmdk: 'VMDK',
             folder: 'Folder',
             unknown: 'Unknown',
         };
@@ -107,8 +109,6 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
-        height: 100%;
-        overflow-y: auto;
     }
 
     .section-header {

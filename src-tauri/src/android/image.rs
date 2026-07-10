@@ -7,6 +7,8 @@ pub enum ImageFormat {
     Raw,
     Qcow2,
     Iso,
+    Vdi,
+    Vmdk,
     Folder,
     Unknown,
 }
@@ -17,6 +19,8 @@ impl std::fmt::Display for ImageFormat {
             Self::Raw    => write!(f, "raw"),
             Self::Qcow2  => write!(f, "qcow2"),
             Self::Iso    => write!(f, "iso"),
+            Self::Vdi    => write!(f, "vdi"),
+            Self::Vmdk   => write!(f, "vmdk"),
             Self::Folder => write!(f, "folder"),
             Self::Unknown => write!(f, "unknown"),
         }
@@ -33,6 +37,8 @@ pub fn detect_image(path: &Path) -> ImageFormat {
         Some("img") | Some("raw") => ImageFormat::Raw,
         Some("qcow2")             => ImageFormat::Qcow2,
         Some("iso")               => ImageFormat::Iso,
+        Some("vdi")               => ImageFormat::Vdi,
+        Some("vmdk")              => ImageFormat::Vmdk,
         _                         => ImageFormat::Unknown,
     }
 }

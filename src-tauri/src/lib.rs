@@ -3,6 +3,7 @@ pub mod commands;
 pub mod devices;
 pub mod engine;
 pub mod storage;
+pub mod settings;
 
 use android::image_manager::ImageManager;
 use android::snapshot::SnapshotManager;
@@ -17,6 +18,8 @@ use commands::runtime::{check_qemu, device_status, start_device, stop_device, Ap
 use commands::snapshots::{
     create_snapshot, delete_snapshot, list_snapshots, restore_snapshot, Snapshots,
 };
+use commands::settings::{get_settings, update_settings};
+use commands::deps::{check_deps, download_adb};
 use devices::DeviceManager;
 use engine::runtime::Runtime;
 use std::sync::Mutex;
@@ -74,6 +77,10 @@ pub fn run() {
             create_snapshot,
             restore_snapshot,
             delete_snapshot,
+            get_settings,
+            update_settings,
+            check_deps,
+            download_adb,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

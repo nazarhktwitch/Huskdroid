@@ -22,6 +22,8 @@ export interface DeviceConfig {
     ram_mb: number;
     root: RootConfig;
     sandbox: SandboxConfig;
+    display_mode: string;
+    custom_qemu_args: string | null;
     created_at: string;
 }
 

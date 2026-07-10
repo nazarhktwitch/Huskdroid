@@ -18,4 +18,6 @@ pub struct BackendArgs {
     pub ram_mb: u32,
     pub disable_network: bool,
     pub enable_root: bool,
+    pub display_mode: String,
+    pub custom_args: Option<String>,
 }

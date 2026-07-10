@@ -32,7 +32,18 @@ impl Backend for QemuBackend {
             cmd.args(["-net", "nic", "-net", "user,hostfwd=tcp::5555-:5555"]);
         }
 
-        // cmd.args(["-display", "none"]);
+        match args.display_mode.as_str() {
+            "headless" => {
+                cmd.args(["-display", "none"]);
+            }
+            "vnc" => {
+                cmd.args(["-display", "vnc=127.0.0.1:0"]); // Port 5900
+            }
+            _ => {
+                // "windowed" or default: let QEMU pick default SDL/GTK window
+            }
+        }
+
         cmd.args(["-vga", "std"]); // Android hangs without a VGA adapter
         cmd.args(["-smp", "2"]);   // Give it 2 cores for faster boot
 
@@ -44,6 +55,13 @@ impl Backend for QemuBackend {
         
         #[cfg(target_os = "macos")]
         cmd.args(["-machine", "q35", "-accel", "hvf", "-accel", "tcg", "-cpu", "max"]);
+
+        if let Some(custom) = args.custom_args {
+            let parts = custom.split_whitespace();
+            for part in parts {
+                cmd.arg(part);
+            }
+        }
 
         cmd.spawn().context("failed to spawn QEMU process")
     }

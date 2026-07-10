@@ -38,6 +38,8 @@ pub fn start_device(
             ram_mb: device.ram_mb,
             disable_network: device.sandbox.disable_network,
             enable_root: device.root.enabled,
+            display_mode: device.display_mode.clone(),
+            custom_args: device.custom_qemu_args.clone(),
         }
     };
 

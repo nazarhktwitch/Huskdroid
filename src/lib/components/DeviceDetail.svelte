@@ -77,16 +77,12 @@
         }
     }
 
-    async function handleImageSelect(e: Event) {
+    async function saveDevice() {
         if (!device) return;
-        const select = e.target as HTMLSelectElement;
-        const val = select.value === "" ? null : select.value;
-        
-        const updated = { ...device, image_path: val };
         busy = true;
+        error = null;
         try {
-            await updateDevice(updated);
-            device = updated;
+            await updateDevice(device);
         } catch (err) {
             error = String(err);
         } finally {
@@ -144,36 +140,74 @@
 
         <div class="info-grid">
             <div class="info-row">
+                <span class="info-label">Name</span>
+                {#if isRunning}
+                    <span class="info-val mono">{device.name}</span>
+                {:else}
+                    <input class="info-input mono" type="text" bind:value={device.name} onchange={saveDevice} disabled={busy} />
+                {/if}
+            </div>
+            <div class="info-row">
                 <span class="info-label">Android</span>
                 <span class="info-val mono">{device.android_version}</span>
             </div>
             <div class="info-row">
-                <span class="info-label">RAM</span>
-                <span class="info-val mono">{device.ram_mb} MB</span>
+                <span class="info-label">RAM (MB)</span>
+                {#if isRunning}
+                    <span class="info-val mono">{device.ram_mb}</span>
+                {:else}
+                    <input class="info-input mono" type="number" min="512" max="16384" step="256" bind:value={device.ram_mb} onchange={saveDevice} disabled={busy} />
+                {/if}
+            </div>
+            <div class="info-row">
+                <span class="info-label">Display</span>
+                {#if isRunning}
+                    <span class="info-val mono">{device.display_mode}</span>
+                {:else}
+                    <select class="info-select mono" bind:value={device.display_mode} onchange={saveDevice} disabled={busy}>
+                        <option value="windowed">Windowed</option>
+                        <option value="headless">Headless</option>
+                        <option value="vnc">VNC (Port 5900)</option>
+                    </select>
+                {/if}
+            </div>
+            <div class="info-row">
+                <span class="info-label">Extra Args</span>
+                {#if isRunning}
+                    <span class="info-val mono truncate">{device.custom_qemu_args || "none"}</span>
+                {:else}
+                    <input class="info-input mono" type="text" placeholder="-cpu kvm64" bind:value={device.custom_qemu_args} onchange={saveDevice} disabled={busy} />
+                {/if}
             </div>
             <div class="info-row">
                 <span class="info-label">Root</span>
-                <span class="info-val mono"
-                    >{device.root.enabled ? "enabled" : "disabled"}</span
-                >
-            </div>
-            <div class="info-row">
-                <span class="info-label">SELinux</span>
-                <span class="info-val mono">{device.root.selinux}</span>
+                {#if isRunning}
+                    <span class="info-val mono">{device.root.enabled ? "enabled" : "disabled"}</span>
+                {:else}
+                    <select class="info-select mono" bind:value={device.root.enabled} onchange={saveDevice} disabled={busy}>
+                        <option value={true}>Enabled</option>
+                        <option value={false}>Disabled</option>
+                    </select>
+                {/if}
             </div>
             <div class="info-row">
                 <span class="info-label">Network</span>
-                <span class="info-val mono">
-                    {device.sandbox.disable_network ? "isolated" : "enabled"}
-                </span>
+                {#if isRunning}
+                    <span class="info-val mono">{device.sandbox.disable_network ? "isolated" : "enabled"}</span>
+                {:else}
+                    <select class="info-select mono" bind:value={device.sandbox.disable_network} onchange={saveDevice} disabled={busy}>
+                        <option value={false}>Enabled</option>
+                        <option value={true}>Isolated (No internet)</option>
+                    </select>
+                {/if}
             </div>
             <div class="info-row">
                 <span class="info-label">Image</span>
                 {#if isRunning}
                     <span class="info-val mono truncate">{device.image_path || "None"}</span>
                 {:else}
-                    <select class="info-select mono" value={device.image_path || ""} onchange={handleImageSelect} disabled={busy}>
-                        <option value="">-- No image assigned --</option>
+                    <select class="info-select mono" bind:value={device.image_path} onchange={saveDevice} disabled={busy}>
+                        <option value={null}>-- No image assigned --</option>
                         {#each availableImages as img}
                             <option value={img.path}>{img.name} ({img.format})</option>
                         {/each}
@@ -275,7 +309,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    .info-select {
+    .info-select, .info-input {
         flex: 1;
         background: var(--bg-elevated);
         border: 1px solid var(--border);
@@ -283,10 +317,10 @@
         border-radius: var(--radius-sm);
         padding: 4px 8px;
         font-size: 12px;
-        cursor: pointer;
+        min-width: 0;
     }
 
-    .info-select:disabled {
+    .info-select:disabled, .info-input:disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }

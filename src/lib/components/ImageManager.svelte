@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { open } from '@tauri-apps/plugin-opener';
     import { listImages, importImage, deleteImage, type ImageEntry } from '$lib/api/images';
 
     let images = $state<ImageEntry[]>([]);

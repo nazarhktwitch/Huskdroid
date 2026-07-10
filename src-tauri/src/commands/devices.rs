@@ -50,3 +50,12 @@ pub fn get_device(state: State<Devices>, id: Uuid) -> Result<Option<DeviceConfig
     let mgr = state.0.lock().map_err(|e| e.to_string())?;
     Ok(mgr.get(id).cloned())
 }
+
+#[tauri::command]
+pub fn update_device(
+    state: State<Devices>,
+    device: DeviceConfig,
+) -> Result<(), String> {
+    let mut mgr = state.0.lock().map_err(|e| e.to_string())?;
+    mgr.update(device).map_err(|e| e.to_string())
+}

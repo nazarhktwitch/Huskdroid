@@ -3,8 +3,10 @@
     import {
         getDevice,
         deleteDevice,
+        updateDevice,
         type DeviceConfig,
     } from "$lib/api/devices";
+    import { listImages, type ImageEntry } from "$lib/api/images";
     import { deviceStatuses, setStatus } from "$lib/stores/deviceStatus";
     import { startDevice, stopDevice, checkQemu } from "$lib/api/runtime";
     import SnapshotPanel from "./SnapshotPanel.svelte";
@@ -18,13 +20,18 @@
     let busy = $state(false);
     let error = $state<string | null>(null);
     let qemuOk = $state<boolean | null>(null);
+    let availableImages = $state<ImageEntry[]>([]);
 
     onMount(async () => {
         try {
-            [device, qemuOk] = await Promise.all([
+            const [dev, qemu, imgs] = await Promise.all([
                 getDevice(deviceId),
                 checkQemu(),
+                listImages()
             ]);
+            device = dev;
+            qemuOk = qemu;
+            availableImages = imgs;
         } catch (e) {
             error = String(e);
         } finally {
@@ -67,6 +74,23 @@
             error = String(e);
         } finally {
             showConfirm = false;
+        }
+    }
+
+    async function handleImageSelect(e: Event) {
+        if (!device) return;
+        const select = e.target as HTMLSelectElement;
+        const val = select.value === "" ? null : select.value;
+        
+        const updated = { ...device, image_path: val };
+        busy = true;
+        try {
+            await updateDevice(updated);
+            device = updated;
+        } catch (err) {
+            error = String(err);
+        } finally {
+            busy = false;
         }
     }
 
@@ -143,14 +167,19 @@
                     {device.sandbox.disable_network ? "isolated" : "enabled"}
                 </span>
             </div>
-            {#if device.image_path}
-                <div class="info-row">
-                    <span class="info-label">Image</span>
-                    <span class="info-val mono truncate"
-                        >{device.image_path}</span
-                    >
-                </div>
-            {/if}
+            <div class="info-row">
+                <span class="info-label">Image</span>
+                {#if isRunning}
+                    <span class="info-val mono truncate">{device.image_path || "None"}</span>
+                {:else}
+                    <select class="info-select mono" value={device.image_path || ""} onchange={handleImageSelect} disabled={busy}>
+                        <option value="">-- No image assigned --</option>
+                        {#each availableImages as img}
+                            <option value={img.path}>{img.name} ({img.format})</option>
+                        {/each}
+                    </select>
+                {/if}
+            </div>
         </div>
 
         <SnapshotPanel deviceId={device.id} />
@@ -245,5 +274,20 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+    .info-select {
+        flex: 1;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        border-radius: var(--radius-sm);
+        padding: 4px 8px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .info-select:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 </style>

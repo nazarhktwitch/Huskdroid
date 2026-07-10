@@ -10,7 +10,7 @@ use commands::apk::{
     check_adb, exec_adb_root, exec_shell, get_selinux_mode, install_apk, list_adb_devices,
     list_packages, set_selinux_mode, uninstall_apk,
 };
-use commands::devices::{create_device, delete_device, get_device, list_devices, Devices};
+use commands::devices::{create_device, delete_device, get_device, list_devices, update_device, Devices};
 use commands::fs::{fs_delete_file, fs_list_device_dir, fs_list_dir, fs_pull_file, fs_push_file};
 use commands::images::{delete_image, import_image, list_images, Images};
 use commands::runtime::{check_qemu, device_status, start_device, stop_device, AppRuntime};
@@ -48,6 +48,7 @@ pub fn run() {
             create_device,
             delete_device,
             get_device,
+            update_device,
             list_images,
             import_image,
             delete_image,

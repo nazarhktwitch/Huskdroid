@@ -47,3 +47,7 @@ export function deleteDevice(id: string): Promise<void> {
 export function getDevice(id: string): Promise<DeviceConfig | null> {
     return invoke('get_device', { id });
 }
+
+export function updateDevice(device: DeviceConfig): Promise<void> {
+    return invoke('update_device', { device });
+}

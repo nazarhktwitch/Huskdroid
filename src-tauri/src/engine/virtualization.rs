@@ -29,16 +29,21 @@ impl Backend for QemuBackend {
         if args.disable_network {
             cmd.args(["-net", "none"]);
         } else {
-            cmd.args(["-net", "nic", "-net", "user"]);
+            cmd.args(["-net", "nic", "-net", "user,hostfwd=tcp::5555-:5555"]);
         }
 
         cmd.args(["-display", "none"]);
-        cmd.args(["-vga", "none"]);
+        cmd.args(["-vga", "std"]); // Android hangs without a VGA adapter
+        cmd.args(["-smp", "2"]);   // Give it 2 cores for faster boot
 
         #[cfg(target_os = "linux")]
         cmd.args(["-enable-kvm", "-cpu", "host"]);
-        #[cfg(not(target_os = "linux"))]
-        cmd.args(["-cpu", "max"]);
+        
+        #[cfg(target_os = "windows")]
+        cmd.args(["-machine", "q35", "-accel", "whpx,kernel-irqchip=off", "-accel", "hax", "-accel", "tcg"]);
+        
+        #[cfg(target_os = "macos")]
+        cmd.args(["-machine", "q35", "-accel", "hvf", "-accel", "tcg", "-cpu", "max"]);
 
         cmd.spawn().context("failed to spawn QEMU process")
     }

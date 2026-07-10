@@ -14,7 +14,7 @@
     let selectedId = $state<string | null>(null);
     let showCreateDialog = $state(false);
     let showAdb = $state(false);
-    let deviceList: DeviceList;
+    let deviceList = $state<DeviceList>();
 
     function onDeviceCreated(device: DeviceConfig) {
         deviceList?.refresh();
@@ -60,17 +60,17 @@
             </div>
         {:else if view === 'apk'}
             <div class="panel-view split-v">
-                <ApkManager />
+                <div class="split-content">
+                    <ApkManager />
+                </div>
+                <div class="adb-toggle-bar">
+                    <button class="ghost" onclick={() => (showAdb = !showAdb)}>
+                        {showAdb ? 'Hide ADB Console' : 'Show ADB Console'}
+                    </button>
+                </div>
                 <div class="adb-pane" class:visible={showAdb}>
                     <AdbConsole />
                 </div>
-                <button
-                    class="adb-toggle ghost"
-                    onclick={() => (showAdb = !showAdb)}
-                    title="Toggle ADB console"
-                >
-                    {showAdb ? 'Hide' : 'Show'} ADB Console
-                </button>
             </div>
         {:else if selectedId}
             <DeviceDetail
@@ -123,13 +123,20 @@
     .sidebar-nav {
         display: flex;
         gap: 2px;
-        padding: 8px 8px 0;
+        padding: 4px;
+        margin: 12px 12px 0;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
         flex-shrink: 0;
     }
 
     .nav-item {
         flex: 1;
-        padding: 5px 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 6px 4px;
         font-size: 11px;
         font-weight: 500;
         color: var(--text-muted);
@@ -137,7 +144,8 @@
         border: none;
         border-radius: var(--radius-sm);
         cursor: pointer;
-        transition: background var(--transition), color var(--transition);
+        text-align: center;
+        transition: all var(--transition);
     }
 
     .nav-item:hover {
@@ -146,8 +154,9 @@
     }
 
     .nav-item.active {
-        background: var(--bg-active);
+        background: var(--bg-elevated);
         color: var(--text-primary);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
     .sidebar-body {
@@ -175,7 +184,13 @@
     .panel-view.split-v {
         padding: 0;
         overflow: hidden;
-        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .split-content {
+        flex: 1;
+        overflow-y: auto;
     }
 
     .adb-pane {
@@ -189,13 +204,18 @@
         flex-direction: column;
     }
 
-    .adb-toggle {
-        position: absolute;
-        bottom: 8px;
-        right: 12px;
+    .adb-toggle-bar {
+        display: flex;
+        justify-content: flex-end;
+        padding: 6px 12px;
+        background: var(--bg-surface);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .adb-toggle-bar button {
         font-size: 11px;
         padding: 4px 10px;
-        z-index: 10;
     }
 
     .empty-state {
@@ -206,10 +226,4 @@
         margin: auto;
     }
 
-    .empty-state h1 { font-size: 24px; }
-
-    .placeholder {
-        margin: auto;
-        text-align: center;
-    }
 </style>

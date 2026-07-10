@@ -75,7 +75,6 @@
                         placeholder="e.g. Pixel_Test"
                         bind:value={name}
                         autocomplete="off"
-                        autofocus
                     />
                 </label>
 

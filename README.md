@@ -1,41 +1,53 @@
 # Huskdroid
 
-A lightweight Android emulator
+A lightweight Android emulator without bloat.
 
 Run Android instances with root access, manage images, inspect and modify filesystems
-offline, install APKs, and create snapshots without a heavy emulator
-
-## Getting Started
-
-Releases are **not yet** available. To build from source, see [Build](#build)
+offline, install APKs, and create snapshots without a heavy emulator.
 
 ## Features
 
-- Multi-instance: run several Android instances independently, each with its own config
-- Image support: `.img`, `.raw`, `.qcow2`, `.iso`, and multi-file image folders
-- Root access: `adb root`, su shell, Magisk integration, and SELinux mode control
-- Offline filesystem: browse, edit, copy, and delete files in a stopped device's image
-- Snapshots: save and restore device state like a VM
-- APK manager: drag-and-drop install, package list, uninstall
-- ADB console: built-in terminal with root shell access
-- Sandbox mode: disable network, reset on shutdown, fake device info and GPS
-- CLI: `husk create`, `husk start`, `husk install`, `husk mount`, `husk snapshot`
+- **Device Manager** - create and manage multiple Android device configurations
+- **Image Support** - import raw `.img`, `.qcow2`, `.iso`, and folder images
+- **QEMU Backend** - run Android-x86 images via QEMU with hardware acceleration on Linux
+- **Root Access** - configure root and SELinux mode per device
+- **APK Manager** - install, uninstall, and browse installed packages via ADB
+- **Snapshots** - take and restore point-in-time snapshots of any device image
+- **Filesystem Browser** - browse and manage device files over ADB shell
+- **ADB Console** - run shell commands directly from the UI
+- **Sandbox Mode** - isolate network, reset on shutdown, fake device info
 
-## Build
+## Getting Started
 
-Requirements: Rust, Node.js >= 18, QEMU (device boot)
-
-```sh
-npm install
-npm run tauri dev
-```
+Releases are **not yet** available. To build from source, see [Build](#build).
 
 ## Requirements
 
-- QEMU must be installed and in `PATH` to start devices
-- `adb` must be installed and in `PATH` for APK and shell features
-- Windows 10+, Linux, or macOS
+| Tool | Purpose |
+|------|---------|
+| [Rust](https://rustup.rs) ≥ 1.75 | Backend compilation |
+| [Node.js](https://nodejs.org) ≥ 18 | Frontend build |
+| [QEMU](https://www.qemu.org/download/) | Device boot (optional for UI development) |
+| [Android SDK platform-tools](https://developer.android.com/tools/releases/platform-tools) | ADB / APK features |
+
+## Build
+
+```sh
+npm install
+npm run tauri dev        # development (hot reload)
+npm run tauri build      # production bundle
+```
+
+## Android Images
+
+No images are bundled. Download separately and import via the **Images** tab:
+
+- [Android-x86](https://www.android-x86.org/download)
+- [Waydroid images](https://sourceforge.net/projects/waydroid/files/images/)
+- [LineageOS](https://download.lineageos.org)
+
+(You can use ANY android image you want, even self-compiled ones!)
 
 ## License
 
-[MIT](LICENSE)
+MIT - see [LICENSE](LICENSE).

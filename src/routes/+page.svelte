@@ -1,13 +1,17 @@
 <script lang="ts">
     // Main app shell, sidebar + content area
-    // Device list and navigation will be wired in as components are added
     import DeviceList from '$lib/components/DeviceList.svelte';
+    import CreateDeviceDialog from '$lib/components/CreateDeviceDialog.svelte';
     import type { DeviceConfig } from '$lib/api/devices';
 
-    let selectedDevice = $state<DeviceConfig | null>(null);
     let selectedId = $state<string | null>(null);
     let showCreateDialog = $state(false);
     let deviceList: DeviceList;
+
+    function onDeviceCreated(device: DeviceConfig) {
+        deviceList?.refresh();
+        selectedId = device.id;
+    }
 </script>
 
 <div class="app-shell">
@@ -41,6 +45,7 @@
     </main>
 </div>
 
+<CreateDeviceDialog bind:open={showCreateDialog} onCreated={onDeviceCreated} />
 <style>
     .app-shell {
         display: flex;
